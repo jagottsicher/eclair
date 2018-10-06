@@ -16,7 +16,7 @@
 
 package fr.acinq.eclair
 
-import com.codahale.metrics.{MetricFilter, Slf4jReporter}
+import com.codahale.metrics.{Meter, Metric, MetricFilter, Slf4jReporter}
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 import java.io.File
@@ -99,6 +99,15 @@ class Setup(datadir: File,
     .convertRatesTo(TimeUnit.SECONDS)
     .convertDurationsTo(TimeUnit.MILLISECONDS)
     .filter(MetricFilter.startsWith("peer"))
+    .filter(new MetricFilter {
+      override def matches(s: String, metric: Metric): Boolean = {
+        metric match {
+            // only display meters if they report significant values
+          case m: Meter => m.getOneMinuteRate > 1 || m.getFiveMinuteRate > 1 || m.getFifteenMinuteRate > 1
+          case _ => true
+        }
+      }
+    })
     .build
     .start(1, TimeUnit.HOURS)
 
