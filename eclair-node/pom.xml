@@ -83,7 +83,7 @@
             <!--conditional logging -->
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
-            <version>3.0.7</version>
+            <version>3.1.6</version>
         </dependency>
     </dependencies>
 </project>
